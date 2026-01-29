@@ -1,0 +1,657 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Content Analyzer | Detect AI-Generated Content</title>
+    <meta
+      name="description"
+      content="Advanced AI-powered platform to detect and analyze AI-generated content"
+    />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
+
+      body {
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+          background: linear-gradient(135deg, #f5f7fa 0%, #e3f2fd 50%, #f3e5f5 100%);
+          color: #1a202c;
+          line-height: 1.6;
+      }
+
+      .container {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 20px;
+      }
+
+      /* Header */
+      header {
+          background: rgba(255, 255, 255, 0.7);
+          backdrop-filter: blur(20px);
+          border-bottom: 1px rgba(255, 255, 255, 0.2);
+          padding: 20px 0;
+          position: sticky;
+          top: 0;
+          z-index: 100;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      }
+
+      .header-content {
+          display: flex;
+          align-items: center;
+          gap: 15px;
+      }
+
+      .logo {
+          width: 50px;
+          height: 50px;
+          background: linear-gradient(135deg, #0ea5e9 0%, #a855f7 100%);
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-center;
+          font-size: 24px;
+          box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+      }
+
+      h1 {
+          background: linear-gradient(135deg, #0284c7 0%, #9333ea 50%, #e11d48 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          font-size: 24px;
+          font-weight: 800;
+      }
+
+      /* Hero Section */
+      .hero {
+          text-align: center;
+          padding: 60px 20px;
+      }
+
+      .hero h2 {
+          font-size: 48px;
+          font-weight: 900;
+          margin-bottom: 20px;
+          line-height: 1.2;
+      }
+
+      .gradient-text {
+          background: linear-gradient(135deg, #0284c7 0%, #9333ea 50%, #e11d48 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+      }
+
+      .hero p {
+          font-size: 20px;
+          color: #64748b;
+          margin-bottom: 30px;
+          max-width: 800px;
+          margin-left: auto;
+          margin-right: auto;
+      }
+
+      /* Upload Section */
+      .upload-container {
+          background: rgba(255, 255, 255, 0.7);
+          backdrop-filter: blur(20px);
+          border-radius: 24px;
+          padding: 40px;
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+          margin: 40px auto;
+          max-width: 800px;
+          border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .upload-zone {
+          border: 3px dashed #cbd5e1;
+          border-radius: 16px;
+          padding: 60px 20px;
+          text-align: center;
+          transition: all 0.3s ease;
+          cursor: pointer;
+          background: rgba(241, 245, 249, 0.5);
+      }
+
+      .upload-zone:hover, .upload-zone.dragover {
+          border-color: #0ea5e9;
+          background: rgba(224, 242, 254, 0.5);
+          transform: scale(1.02);
+      }
+
+      .upload-icon {
+          font-size: 64px;
+          margin-bottom: 20px;
+      }
+
+      .upload-zone h3 {
+          font-size: 24px;
+          margin-bottom: 10px;
+          color: #1e293b;
+      }
+
+      .upload-zone p {
+          color: #64748b;
+          margin-bottom: 20px;
+      }
+
+      .btn {
+          display: inline-block;
+          padding: 14px 32px;
+          border-radius: 12px;
+          font-weight: 600;
+          font-size: 16px;
+          cursor: pointer;
+          border: none;
+          transition: all 0.2s ease;
+          text-decoration: none;
+      }
+
+      .btn-primary {
+          background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%);
+          color: white;
+          box-shadow: 0 8px 24px rgba(14, 165, 233, 0.3);
+      }
+
+      .btn-primary:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 12px 32px rgba(14, 165, 233, 0.4);
+      }
+
+      .btn-primary:active {
+          transform: scale(0.98);
+      }
+
+      .btn-primary:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          transform: none;
+      }
+
+      /* Results Section */
+      .results-container {
+          display: none;
+          max-width: 1200px;
+          margin: 40px auto;
+      }
+
+      .results-container.active {
+          display: block;
+      }
+
+      .stats-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 20px;
+          margin-bottom: 40px;
+      }
+
+      .stat-card {
+          background: rgba(255, 255, 255, 0.7);
+          backdrop-filter: blur(20px);
+          border-radius: 16px;
+          padding: 24px;
+          text-align: center;
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          transition: transform 0.2s ease;
+      }
+
+      .stat-card:hover {
+          transform: translateY(-4px);
+      }
+
+      .stat-icon {
+          width: 48px;
+          height: 48px;
+          border-radius: 12px;
+          margin: 0 auto 16px;
+          display: flex;
+          align-items: center;
+          justify-center;
+          font-size: 24px;
+      }
+
+      .stat-number {
+          font-size: 42px;
+          font-weight: 800;
+          margin-bottom: 8px;
+      }
+
+      .stat-label {
+          text-transform: uppercase;
+          font-size: 12px;
+          font-weight: 600;
+          color: #64748b;
+          letter-spacing: 0.05em;
+      }
+
+      .section {
+          background: rgba(255, 255, 255, 0.7);
+          backdrop-filter: blur(20px);
+          border-radius: 16px;
+          padding: 32px;
+          margin-bottom: 24px;
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      }
+
+      .section h3 {
+          font-size: 24px;
+          margin-bottom: 20px;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+      }
+
+      .content-section {
+          padding: 20px;
+          border-radius: 12px;
+          margin-bottom: 16px;
+          border-left: 4px solid;
+          transition: all 0.2s ease;
+      }
+
+      .content-section:hover {
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      }
+
+      .content-section.ai {
+          background: rgba(168, 85, 247, 0.1);
+          border-color: #a855f7;
+      }
+
+      .content-section.human {
+          background: rgba(16, 185, 129, 0.1);
+          border-color: #10b981;
+      }
+
+      .section-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 12px;
+      }
+
+      .section-type {
+          font-weight: 700;
+          font-size: 14px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+      }
+
+      .section-confidence {
+          font-weight: 700;
+          font-size: 14px;
+      }
+
+      .loading {
+          text-align: center;
+          padding: 40px;
+      }
+
+      .spinner {
+          border: 4px solid #f3f4f6;
+          border-top: 4px solid #0ea5e9;
+          border-radius: 50%;
+          width: 48px;
+          height: 48px;
+          animation: spin 1s linear infinite;
+          margin: 0 auto 20px;
+      }
+
+      @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+      }
+
+      .error {
+          background: rgba(239, 68, 68, 0.1);
+          border: 2px solid #ef4444;
+          border-radius: 12px;
+          padding: 20px;
+          margin: 20px 0;
+          color: #991b1b;
+      }
+
+      .hidden {
+          display: none;
+      }
+
+      footer {
+          background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+          color: white;
+          padding: 40px 20px;
+          margin-top: 80px;
+          text-align: center;
+      }
+
+      footer p {
+          margin: 10px 0;
+          color: #94a3b8;
+      }
+
+      @media (max-width: 768px) {
+          .hero h2 {
+              font-size: 32px;
+          }
+
+          .stats-grid {
+              grid-template-columns: 1fr;
+          }
+
+          .upload-container {
+              padding: 24px;
+          }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <div class="header-content">
+          <div class="logo">🤖</div>
+          <div>
+            <h1>AI Content Analyzer</h1>
+            <p style="font-size: 12px; color: #64748b; margin: 0">
+              Detect & Analyze AI Content
+            </p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container">
+          <h2>
+            Detect <span class="gradient-text">AI-Generated Content</span
+            ><br />with Precision
+          </h2>
+          <p>
+            Upload any document and receive detailed insights into content
+            authenticity, AI usage percentage, and source detection—all in
+            real-time.
+          </p>
+        </div>
+      </section>
+
+      <div class="container">
+        <div id="uploadSection" class="upload-container">
+          <div class="upload-zone" id="dropZone">
+            <div class="upload-icon">📄</div>
+            <h3 id="uploadTitle">Upload Your Document</h3>
+            <p id="uploadDesc">
+              Drag and drop your file here, or click to browse
+            </p>
+            <input
+              type="file"
+              id="fileInput"
+              accept=".pdf,.docx,.txt"
+              style="display: none"
+            />
+            <button
+              class="btn btn-primary"
+              id="uploadBtn"
+              onclick="document.getElementById('fileInput').click()"
+            >
+              Choose File
+            </button>
+            <p style="margin-top: 20px; font-size: 14px; color: #64748b">
+              Supported: PDF, DOCX, TXT (Max 10MB)
+            </p>
+          </div>
+        </div>
+
+        <div id="loadingSection" class="loading hidden">
+          <div class="spinner"></div>
+          <h3>Analyzing your document...</h3>
+          <p style="color: #64748b">This may take a few moments</p>
+        </div>
+
+        <div id="resultsSection" class="results-container">
+          <!-- Results will be populated here by JavaScript -->
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="container">
+        <p
+          style="
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 12px;
+          "
+        >
+          AI Content Analyzer
+        </p>
+        <p>© 2026 AI Content Analyzer. All rights reserved.</p>
+        <p style="font-size: 12px; margin-top: 16px">
+          Built with ❤️ using HTML, CSS, JavaScript, Python, FastAPI, and
+          Advanced AI/NLP
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      const API_URL = "http://localhost:8000";
+
+      const dropZone = document.getElementById("dropZone");
+      const fileInput = document.getElementById("fileInput");
+      const uploadSection = document.getElementById("uploadSection");
+      const loadingSection = document.getElementById("loadingSection");
+      const resultsSection = document.getElementById("resultsSection");
+
+      // Drag and drop handlers
+      dropZone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropZone.classList.add("dragover");
+      });
+
+      dropZone.addEventListener("dragleave", () => {
+        dropZone.classList.remove("dragover");
+      });
+
+      dropZone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dropZone.classList.remove("dragover");
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+          handleFile(files[0]);
+        }
+      });
+
+      dropZone.addEventListener("click", (e) => {
+        if (e.target.tagName !== "BUTTON") {
+          fileInput.click();
+        }
+      });
+
+      fileInput.addEventListener("change", (e) => {
+        if (e.target.files.length > 0) {
+          handleFile(e.target.files[0]);
+        }
+      });
+
+      async function handleFile(file) {
+        // Validate file
+        const validTypes = [
+          "application/pdf",
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "text/plain",
+        ];
+        if (!validTypes.includes(file.type)) {
+          alert("Please upload a PDF, DOCX, or TXT file");
+          return;
+        }
+
+        if (file.size > 10 * 1024 * 1024) {
+          alert("File size must be less than 10MB");
+          return;
+        }
+
+        // Show loading
+        uploadSection.classList.add("hidden");
+        loadingSection.classList.remove("hidden");
+
+        try {
+          const formData = new FormData();
+          formData.append("file", file);
+
+          const response = await fetch(`${API_URL}/api/analyze`, {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!response.ok) {
+            throw new Error(
+              "Analysis failed. Please ensure the backend server is running on http://localhost:8000"
+            );
+          }
+
+          const data = await response.json();
+          displayResults(data);
+        } catch (error) {
+          console.error("Error:", error);
+          loadingSection.innerHTML = `
+                    <div class="error">
+                        <h3>⚠️ Error</h3>
+                        <p>${error.message}</p>
+                        <p style="margin-top: 12px;">Please ensure the backend server is running:</p>
+                        <code style="display: block; background: rgba(0,0,0,0.1); padding: 12px; border-radius: 8px; margin-top: 8px;">
+                            cd backend && python main.py
+                        </code>
+                        <button class="btn btn-primary" style="margin-top: 20px;" onclick="location.reload()">
+                            Try Again
+                        </button>
+                    </div>
+                `;
+        }
+      }
+
+      function displayResults(data) {
+        loadingSection.classList.add("hidden");
+        resultsSection.classList.add("active");
+
+        const html = `
+                <div class="section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                        <div>
+                            <h3>📊 Analysis Results</h3>
+                            <p style="color: #64748b;">${data.filename}</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="location.reload()">
+                            🔄 New Analysis
+                        </button>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: linear-gradient(135deg, #a78bfa, #8b5cf6);">🤖</div>
+                            <div class="stat-number" style="color: #8b5cf6;">${data.aiPercentage}%</div>
+                            <div class="stat-label">AI Generated</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: linear-gradient(135deg, #6ee7b7, #10b981);">👤</div>
+                            <div class="stat-number" style="color: #10b981;">${data.humanPercentage}%</div>
+                            <div class="stat-label">Human Written</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: linear-gradient(135deg, #0ea5e9, #0284c7);">📈</div>
+                            <div class="stat-number" style="color: #0284c7;">${data.confidence}%</div>
+                            <div class="stat-label">Confidence</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: linear-gradient(135deg, #f43f5e, #e11d48);">📝</div>
+                            <div class="stat-number" style="color: #e11d48;">${data.totalWords}</div>
+                            <div class="stat-label">Total Words</div>
+                        </div>
+                    </div>
+                </div>
+
+                ${
+                  data.detectedModel
+                    ? `
+                <div class="section" style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(59, 130, 246, 0.1));">
+                    <h3>🔍 Detected AI Model</h3>
+                    <p style="font-size: 18px; color: #6b21a8;">${data.detectedModel}</p>
+                </div>
+                `
+                    : ""
+                }
+
+                <div class="section">
+                    <h3>📄 Content Analysis</h3>
+                    <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 16px; height: 16px; background: rgba(168, 85, 247, 0.3); border: 2px solid #a855f7; border-radius: 4px;"></div>
+                            <span style="font-size: 14px; font-weight: 600;">AI-Generated</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 16px; height: 16px; background: rgba(16, 185, 129, 0.3); border: 2px solid #10b981; border-radius: 4px;"></div>
+                            <span style="font-size: 14px; font-weight: 600;">Human-Written</span>
+                        </div>
+                    </div>
+                    ${data.sections
+                      .map(
+                        (section) => `
+                        <div class="content-section ${section.type}">
+                            <div class="section-header">
+                                <span class="section-type" style="color: ${section.type === "ai" ? "#a855f7" : "#10b981"};">
+                                    ${section.type === "ai" ? "🤖 AI-Generated" : "👤 Human-Written"}
+                                </span>
+                                <span class="section-confidence" style="color: ${section.type === "ai" ? "#a855f7" : "#10b981"};">
+                                    ${section.confidence}% confidence
+                                </span>
+                            </div>
+                            <p style="color: #334155; line-height: 1.8;">${section.text}</p>
+                        </div>
+                    `
+                      )
+                      .join("")}
+                </div>
+
+                ${
+                  data.recommendations && data.recommendations.length > 0
+                    ? `
+                <div class="section" style="background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.1));">
+                    <h3>💡 Recommendations</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        ${data.recommendations
+                          .map(
+                            (rec) => `
+                            <li style="padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.05); display: flex; gap: 12px;">
+                                <span style="color: #f59e0b; font-size: 20px;">✓</span>
+                                <span style="color: #78350f;">${rec}</span>
+                            </li>
+                        `
+                          )
+                          .join("")}
+                    </ul>
+                </div>
+                `
+                    : ""
+                }
+            `;
+
+        resultsSection.innerHTML = html;
+      }
+    </script>
+  </body>
+</html>
