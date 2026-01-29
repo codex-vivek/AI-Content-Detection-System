@@ -1,3 +1,4 @@
+# Vercel Serverless Function - AI Content Detection System
 import os
 import sys
 
