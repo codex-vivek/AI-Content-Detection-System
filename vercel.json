@@ -1,7 +1,16 @@
 {
   "version": 2,
-  "public": true,
-  "buildCommand": "cd frontend && npm install && npm run build",
-  "installCommand": "cd frontend && npm install",
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/frontend/$1"
+    }
+  ],
+  "buildCommand": "npm install --prefix frontend && npm run build --prefix frontend",
+  "installCommand": "npm install --prefix frontend",
   "outputDirectory": "frontend/.next"
 }
