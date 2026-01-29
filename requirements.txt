@@ -8,3 +8,4 @@ scikit-learn==1.5.2
 aiofiles==24.1.0
 pydantic==2.9.2
 python-dotenv==1.0.1
+gunicorn==23.0.0
