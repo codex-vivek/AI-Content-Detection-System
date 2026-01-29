@@ -1,4 +1,4 @@
-# 🤖 AI-Powered Content Analysis & Source Detection Platform
+# 🤖 AI-Powered Content Analysis & Source Detection Platform 🚀
 
 ## Overview
 An advanced AI-powered platform that analyzes uploaded documents to detect AI-generated content, providing transparent insights into content authenticity and origin.
